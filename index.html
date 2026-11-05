@@ -428,6 +428,7 @@ const grid = document.getElementById("bookGrid");
 
 // 현재 열려 있는 독후감 영역
 let activePanel = null;
+let activeBookIndex = null;
 
 function createBookCard(book, index, panel) {
 
@@ -501,39 +502,55 @@ function createBookCard(book, index, panel) {
   card.append(button, hint, info);
 
   // 표지 클릭 이벤트
+
   button.addEventListener("click", () => {
 
-    const isSamePanel = activePanel === panel;
-    const isOpen = panel.classList.contains("open");
+    const isSameBook = activePanel === panel &&
+                      activeBookIndex === index;
 
-    // 현재 열려 있는 독후감이 있다면 닫기
-    if (activePanel) {
+    // 같은 책을 다시 누르면 독후감 닫기
+    if (isSameBook) {
 
-      activePanel.panel.classList.remove("open");
+      panel.classList.remove("open");
 
-      activePanel.row
-        .querySelectorAll(".cover-button")
-        .forEach(btn => btn.setAttribute("aria-expanded", "false"));
+      const row = card.closest(".book-row");
 
-      activePanel.row
-        .querySelectorAll(".review-hint")
-        .forEach(el => {
-          el.textContent = "표지를 눌러 독후감 보기 ↓";
-        });
+      row.querySelectorAll(".cover-button").forEach(btn => {
+        btn.setAttribute("aria-expanded", "false");
+      });
+
+      row.querySelectorAll(".review-hint").forEach(el => {
+        el.textContent = "표지를 눌러 독후감 보기 ↓";
+      });
 
       activePanel = null;
-    }
+      activeBookIndex = null;
 
-    // 같은 줄에서 이미 열려 있던 독후감을 다시 누른 경우
-    if (isSamePanel && isOpen) {
       return;
     }
 
-    // 선택한 책의 독후감 내용 변경
-    const reviewNumber = document.createElement("div");
+    // 이전에 열려 있던 독후감 초기화
+    if (activePanel) {
 
+      const previousRow = activePanel.row;
+
+      // 다른 줄이라면 기존 독후감 닫기
+      if (activePanel.panel !== panel) {
+        activePanel.panel.classList.remove("open");
+      }
+
+      previousRow.querySelectorAll(".cover-button").forEach(btn => {
+        btn.setAttribute("aria-expanded", "false");
+      });
+
+      previousRow.querySelectorAll(".review-hint").forEach(el => {
+        el.textContent = "표지를 눌러 독후감 보기 ↓";
+      });
+    }
+
+    // 선택한 책의 독후감 내용으로 교체
     panel.querySelector(".review-label").textContent =
-      `MY REVIEW · BOOK ${number}`;
+      `MY REVIEW · BOOK ${String(index + 1).padStart(2, "0")}`;
 
     panel.querySelector(".review-heading").textContent =
       book.title;
@@ -541,19 +558,21 @@ function createBookCard(book, index, panel) {
     panel.querySelector(".review-content").textContent =
       book.review;
 
-    // 독후감 표시
+    // 독후감 영역 표시
     panel.classList.add("open");
 
     button.setAttribute("aria-expanded", "true");
     hint.textContent = "독후감이 펼쳐졌습니다 ↑";
 
-    // 현재 열린 영역 기억
+    // 현재 선택 정보 저장
     activePanel = {
       panel: panel,
       row: card.closest(".book-row")
     };
 
-    // 화면 스크롤
+    activeBookIndex = index;
+
+    // 부드럽게 스크롤
     requestAnimationFrame(() => {
       panel.scrollIntoView({
         behavior: "smooth",
@@ -562,6 +581,7 @@ function createBookCard(book, index, panel) {
     });
 
   });
+
 
   return card;
 }
