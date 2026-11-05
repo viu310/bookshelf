@@ -184,9 +184,7 @@ header {
 }
 
 /*
-  독후감 영역:
-  book-items와 완전히 분리된 별도 영역
-  따라서 책 5권의 배열에 영향을 주지 않음
+  독후감 영역
 */
 .review-panel {
   display: none;
