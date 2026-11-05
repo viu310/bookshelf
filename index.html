@@ -4,9 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Book Archive</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -53,7 +55,7 @@ header {
   letter-spacing: 1px;
 }
 
-/* 제목 */
+/* 메인 제목 */
 .intro {
   max-width: 1200px;
   margin: auto;
@@ -74,39 +76,37 @@ header {
   font-weight: 300;
 }
 
-/* 책 목록 */
+/* 전체 책장 */
 .container {
   max-width: 1200px;
   margin: auto;
   padding: 0 30px 90px;
 }
 
-.book-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 45px;
-}
-
-/* 5권씩 독립된 한 줄 */
+/*
+  핵심 구조:
+  book-row 하나가 책 5권과 독후감 영역을 모두 포함
+*/
 .book-row {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
+  margin-bottom: 48px;
 }
 
-/* 한 줄에 책 5권 */
+/* 책 5권만 들어가는 독립 그리드 */
 .book-items {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 24px;
 }
 
-
+/* 개별 책 */
 .book-card {
   min-width: 0;
 }
 
-/* 표지 */
+/* 책 표지 버튼 */
 .cover-button {
   width: 100%;
   border: none;
@@ -114,8 +114,7 @@ header {
   background: none;
   cursor: pointer;
   display: block;
-  position: relative;
-  overflow: hidden;
+  text-align: left;
 }
 
 .cover-wrap {
@@ -162,7 +161,7 @@ header {
   letter-spacing: 2px;
 }
 
-/* 클릭 안내 */
+/* 표지 클릭 안내 */
 .review-hint {
   font-size: 10px;
   color: #a39b8b;
@@ -198,15 +197,18 @@ header {
   line-height: 1.7;
 }
 
-/* 독후감 드롭다운 */
+/*
+  독후감 영역:
+  book-items와 완전히 분리된 별도 영역
+  따라서 책 5권의 배열에 영향을 주지 않음
+*/
 .review-panel {
   display: none;
-  grid-column: 1 / -1;
+  width: 100%;
   background: var(--card);
   border: 1px solid var(--line);
   border-left: 3px solid var(--green);
-  padding: 28px 32px;
-  margin-top: -18px;
+  padding: 30px 34px;
   animation: reveal .3s ease;
 }
 
@@ -234,9 +236,10 @@ header {
 
 .review-heading {
   font-family: 'DM Serif Display', serif;
-  font-size: 23px;
+  font-size: 25px;
+  font-weight: 400;
   color: var(--green);
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .review-content {
@@ -245,6 +248,7 @@ header {
   line-height: 2.1;
   color: #5f6057;
   word-break: keep-all;
+  white-space: pre-line;
 }
 
 .review-close {
@@ -254,7 +258,11 @@ header {
   font-family: inherit;
   font-size: 11px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 22px;
+}
+
+.review-close:hover {
+  color: var(--green);
 }
 
 /* 하단 */
@@ -289,18 +297,13 @@ footer {
     padding: 0 18px 65px;
   }
 
-  .book-grid {
+  .book-items {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px 16px;
+    gap: 25px 16px;
   }
 
   .book-title {
     font-size: 13px;
-  }
-
-  .book-items {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 25px 16px;
   }
 
   .review-panel {
@@ -309,6 +312,10 @@ footer {
 
   .review-content {
     font-size: 14px;
+  }
+
+  .book-row {
+    margin-bottom: 38px;
   }
 }
 </style>
@@ -327,7 +334,7 @@ footer {
 </section>
 
 <main class="container">
-  <div class="book-grid" id="bookGrid"></div>
+  <div id="bookGrid"></div>
 </main>
 
 <footer>
@@ -336,24 +343,24 @@ footer {
 
 <script>
 
-// ===================================
-// 책 10권 정보 수정하는 곳
-// ===================================
+// ========================================
+// 1. 책 정보 입력
+// ========================================
 
 const books = [
   {
     title: "이방인",
     author: "알베르 카뮈",
-    publisher: "열린책들",
-    cover: "images/The Stranger.jpg",
-    review: "이곳에 첫 번째 책의 독후감을 작성하세요. 책을 읽으며 느꼈던 감정과 인상 깊었던 내용을 자유롭게 기록하면 됩니다."
+    publisher: "민음사",
+    cover: "images/The stranger.png",
+    review: "이곳에 이방인을 읽고 느꼈던 생각을 적어주세요."
   },
   {
     title: "책 제목 02",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-02.jpg",
-    review: "두 번째 책을 읽고 느낀 점을 기록하세요."
+    review: "두 번째 책의 독후감을 작성하세요."
   },
   {
     title: "책 제목 03",
@@ -413,31 +420,32 @@ const books = [
   }
 ];
 
-// ===================================
-// 화면 생성
-// ===================================
-
+// ========================================
+// 2. 책 카드 생성
+// ========================================
 
 const grid = document.getElementById("bookGrid");
 
-let activeRow = null;
+// 현재 열려 있는 독후감 영역
+let activePanel = null;
 
-// 책 카드 생성
 function createBookCard(book, index, panel) {
+
   const number = String(index + 1).padStart(2, "0");
 
   const card = document.createElement("article");
   card.className = "book-card";
 
+  // 표지 버튼
   const button = document.createElement("button");
   button.className = "cover-button";
   button.type = "button";
   button.setAttribute("aria-expanded", "false");
-  button.setAttribute("aria-label", `${book.title} 독후감 보기`);
 
   const wrap = document.createElement("div");
   wrap.className = "cover-wrap";
 
+  // 이미지가 없을 경우 표시할 기본 표지
   const placeholder = document.createElement("div");
   placeholder.className = "cover-placeholder";
 
@@ -449,6 +457,7 @@ function createBookCard(book, index, panel) {
 
   placeholder.append(placeholderTitle, placeholderNumber);
 
+  // 실제 책 표지
   const img = document.createElement("img");
   img.src = book.cover;
   img.alt = `${book.title} 책 표지`;
@@ -459,16 +468,19 @@ function createBookCard(book, index, panel) {
   };
 
   img.onerror = () => {
-    img.style.display = "flex";
+    img.style.display = "none";
+    placeholder.style.display = "flex";
   };
 
   wrap.append(placeholder, img);
   button.appendChild(wrap);
 
+  // 클릭 안내
   const hint = document.createElement("div");
   hint.className = "review-hint";
   hint.textContent = "표지를 눌러 독후감 보기 ↓";
 
+  // 책 정보
   const info = document.createElement("div");
   info.className = "book-info";
 
@@ -485,90 +497,114 @@ function createBookCard(book, index, panel) {
   meta.textContent = `${book.author} · ${book.publisher}`;
 
   info.append(bookNumber, title, meta);
+
   card.append(button, hint, info);
 
-  // 독후감 열기 / 닫기
+  // 표지 클릭 이벤트
   button.addEventListener("click", () => {
 
+    const isSamePanel = activePanel === panel;
     const isOpen = panel.classList.contains("open");
 
-    // 다른 줄의 독후감 닫기
-    if (activeRow && activeRow !== panel) {
-      activeRow.classList.remove("open");
+    // 현재 열려 있는 독후감이 있다면 닫기
+    if (activePanel) {
 
-      activeRow.querySelectorAll(".cover-button")
+      activePanel.panel.classList.remove("open");
+
+      activePanel.row
+        .querySelectorAll(".cover-button")
         .forEach(btn => btn.setAttribute("aria-expanded", "false"));
 
-      activeRow.querySelectorAll(".review-hint")
-        .forEach(el => el.textContent = "표지를 눌러 독후감 보기 ↓");
+      activePanel.row
+        .querySelectorAll(".review-hint")
+        .forEach(el => {
+          el.textContent = "표지를 눌러 독후감 보기 ↓";
+        });
+
+      activePanel = null;
     }
 
-    // 현재 줄이 열려 있으면 닫기
-    if (isOpen) {
-      panel.classList.remove("open");
-
-      button.setAttribute("aria-expanded", "false");
-      hint.textContent = "표지를 눌러 독후감 보기 ↓";
-
-      activeRow = null;
+    // 같은 줄에서 이미 열려 있던 독후감을 다시 누른 경우
+    if (isSamePanel && isOpen) {
       return;
     }
 
-    // 현재 줄의 독후감 펼치기
+    // 선택한 책의 독후감 내용 변경
+    const reviewNumber = document.createElement("div");
+
+    panel.querySelector(".review-label").textContent =
+      `MY REVIEW · BOOK ${number}`;
+
+    panel.querySelector(".review-heading").textContent =
+      book.title;
+
+    panel.querySelector(".review-content").textContent =
+      book.review;
+
+    // 독후감 표시
     panel.classList.add("open");
 
     button.setAttribute("aria-expanded", "true");
     hint.textContent = "독후감이 펼쳐졌습니다 ↑";
 
-    activeRow = panel;
+    // 현재 열린 영역 기억
+    activePanel = {
+      panel: panel,
+      row: card.closest(".book-row")
+    };
 
+    // 화면 스크롤
     requestAnimationFrame(() => {
       panel.scrollIntoView({
         behavior: "smooth",
         block: "nearest"
       });
     });
+
   });
 
   return card;
 }
 
-// 독후감 영역 생성
-function createReviewPanel(book, index) {
-  const number = String(index + 1).padStart(2, "0");
+// ========================================
+// 3. 독후감 영역 생성
+// ========================================
+
+function createReviewPanel() {
 
   const panel = document.createElement("section");
   panel.className = "review-panel";
 
   const label = document.createElement("div");
   label.className = "review-label";
-  label.textContent = `MY REVIEW · BOOK ${number}`;
+  label.textContent = "MY REVIEW";
 
   const heading = document.createElement("h3");
   heading.className = "review-heading";
-  heading.textContent = book.title;
 
   const content = document.createElement("p");
   content.className = "review-content";
-  content.textContent = book.review;
 
   const close = document.createElement("button");
   close.className = "review-close";
   close.type = "button";
-  close.textContent = "접기 ↑";
+  close.textContent = "독후감 접기 ↑";
 
   close.addEventListener("click", () => {
+
     panel.classList.remove("open");
 
-    panel.parentElement
-      .querySelectorAll(".cover-button")
-      .forEach(btn => btn.setAttribute("aria-expanded", "false"));
+    const row = panel.closest(".book-row");
 
-    panel.parentElement
-      .querySelectorAll(".review-hint")
-      .forEach(el => el.textContent = "표지를 눌러 독후감 보기 ↓");
+    row.querySelectorAll(".cover-button").forEach(btn => {
+      btn.setAttribute("aria-expanded", "false");
+    });
 
-    activeRow = null;
+    row.querySelectorAll(".review-hint").forEach(el => {
+      el.textContent = "표지를 눌러 독후감 보기 ↓";
+    });
+
+    activePanel = null;
   });
 
   panel.append(label, heading, content, close);
@@ -576,12 +612,17 @@ function createReviewPanel(book, index) {
   return panel;
 }
 
-// 10권을 5권씩 두 줄로 분리
+// ========================================
+// 4. 10권을 5권씩 두 개의 책장으로 분리
+// ========================================
+
 for (let rowIndex = 0; rowIndex < 2; rowIndex++) {
 
+  // 독립된 책장
   const row = document.createElement("section");
   row.className = "book-row";
 
+  // 책 5권만 들어가는 그리드
   const items = document.createElement("div");
   items.className = "book-items";
 
@@ -590,100 +631,36 @@ for (let rowIndex = 0; rowIndex < 2; rowIndex++) {
 
   const rowBooks = books.slice(start, end);
 
+  // 이 줄만 사용하는 독후감 영역
+  const panel = createReviewPanel();
+
+  // 책 5권 생성
   rowBooks.forEach((book, i) => {
+
     const index = start + i;
 
     const card = createBookCard(
       book,
       index,
-      null
+      panel
     );
 
     items.appendChild(card);
   });
 
-  const panel = createReviewPanel(
-    rowBooks[0],
-    start
-  );
+  /*
+    핵심:
+    책 5권 그리드와 독후감 영역은
+    서로 다른 형제 요소로 배치됩니다.
 
-  // 각 줄의 독후감은 해당 줄 바로 아래에 배치
-  // 개별 카드가 자신의 줄 독후감을 열도록 연결
-  rowBooks.forEach((book, i) => {
+    따라서 독후감이 열려도
+    책 5권의 가로 배열은 유지됩니다.
+  */
+  row.appendChild(items);
+  row.appendChild(panel);
 
-    const card = items.children[i];
-    const button = card.querySelector(".cover-button");
-    const hint = card.querySelector(".review-hint");
-
-    button.replaceWith(button.cloneNode(true));
-
-    const newButton = card.querySelector(".cover-button");
-
-    newButton.addEventListener("click", () => {
-
-      const isOpen = panel.classList.contains("open");
-
-      if (activeRow && activeRow !== panel) {
-        activeRow.classList.remove("open");
-
-        activeRow.parentElement
-          .querySelectorAll(".cover-button")
-          .forEach(btn => btn.setAttribute("aria-expanded", "false"));
-
-        activeRow.parentElement
-          .querySelectorAll(".review-hint")
-          .forEach(el => el.textContent = "표지를 눌러 독후감 보기 ↓");
-      }
-
-      if (isOpen && activeRow === panel) {
-        panel.classList.remove("open");
-        newButton.setAttribute("aria-expanded", "false");
-        hint.textContent = "표지를 눌러 독후감 보기 ↓";
-        activeRow = null;
-        return;
-      }
-
-      // 클릭한 책의 독후감으로 내용 변경
-      const bookIndex = start + i;
-      const selectedBook = books[bookIndex];
-
-      panel.querySelector(".review-label").textContent =
-        `MY REVIEW · BOOK ${String(bookIndex + 1).padStart(2, "0")}`;
-
-      panel.querySelector(".review-heading").textContent =
-        selectedBook.title;
-
-      panel.querySelector(".review-content").textContent =
-        selectedBook.review;
-
-      panel.classList.add("open");
-
-      row.querySelectorAll(".cover-button").forEach(btn => {
-        btn.setAttribute("aria-expanded", "false");
-      });
-
-      row.querySelectorAll(".review-hint").forEach(el => {
-        el.textContent = "표지를 눌러 독후감 보기 ↓";
-      });
-
-      newButton.setAttribute("aria-expanded", "true");
-      hint.textContent = "독후감이 펼쳐졌습니다 ↑";
-
-      activeRow = panel;
-
-      requestAnimationFrame(() => {
-        panel.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest"
-        });
-      });
-    });
-  });
-
-  row.append(items, panel);
   grid.appendChild(row);
 }
-
 
 </script>
 
