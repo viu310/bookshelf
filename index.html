@@ -11,314 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
-:root {
-  --bg: #f5f1e8;
-  --card: #fffdf8;
-  --green: #354b3d;
-  --text: #333b32;
-  --muted: #89877c;
-  --line: #e8e1d5;
-}
+<link rel="stylesheet" href="css/style.css">
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans KR', sans-serif;
-}
-
-/* 상단 */
-header {
-  max-width: 1200px;
-  margin: auto;
-  padding: 28px 30px 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 22px;
-  color: var(--green);
-}
-
-.header-count {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 1px;
-}
-
-/* 메인 제목 */
-.intro {
-  max-width: 1200px;
-  margin: auto;
-  padding: 28px 30px 45px;
-}
-
-.intro h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(35px, 5vw, 49px);
-  font-weight: 400;
-  color: var(--green);
-}
-
-.intro p {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 10px;
-  font-weight: 300;
-}
-
-/* 전체 책장 */
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 30px 90px;
-}
-
-/*
-  핵심 구조:
-  book-row 하나가 책 5권과 독후감 영역을 모두 포함
-*/
-.book-row {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  margin-bottom: 48px;
-}
-
-/* 책 5권만 들어가는 독립 그리드 */
-.book-items {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 24px;
-}
-
-/* 개별 책 */
-.book-card {
-  min-width: 0;
-}
-
-/* 책 표지 버튼 */
-.cover-button {
-  width: 100%;
-  border: none;
-  padding: 0;
-  background: none;
-  cursor: pointer;
-  display: block;
-  text-align: left;
-}
-
-.cover-wrap {
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  background: #e8e0d3;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 3px 5px 12px rgba(0,0,0,.10);
-  transition: transform .3s, box-shadow .3s;
-}
-
-.cover-button:hover .cover-wrap {
-  transform: translateY(-5px);
-  box-shadow: 5px 12px 20px rgba(0,0,0,.14);
-}
-
-.cover-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.cover-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  background: #d9d0c0;
-  color: #fffdf8;
-}
-
-.cover-placeholder span {
-  font-family: 'DM Serif Display', serif;
-  font-size: 18px;
-}
-
-.cover-placeholder small {
-  margin-top: 10px;
-  font-size: 10px;
-  letter-spacing: 2px;
-}
-
-/* 표지 클릭 안내 */
-.review-hint {
-  font-size: 10px;
-  color: #a39b8b;
-  text-align: center;
-  margin-top: 11px;
-}
-
-/* 책 정보 */
-.book-info {
-  padding-top: 13px;
-}
-
-.book-number {
-  font-family: 'DM Serif Display', serif;
-  font-size: 11px;
-  color: #a69c89;
-  letter-spacing: 1.5px;
-  margin-bottom: 7px;
-}
-
-.book-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--green);
-  line-height: 1.5;
-  word-break: keep-all;
-}
-
-.book-meta {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 6px;
-  line-height: 1.7;
-}
-
-/*
-  독후감 영역:
-  book-items와 완전히 분리된 별도 영역
-  따라서 책 5권의 배열에 영향을 주지 않음
-*/
-.review-panel {
-  display: none;
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--green);
-  padding: 30px 34px;
-  animation: reveal .3s ease;
-}
-
-.review-panel.open {
-  display: block;
-}
-
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.review-label {
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: #a39883;
-  margin-bottom: 13px;
-}
-
-.review-heading {
-  font-family: 'DM Serif Display', serif;
-  font-size: 25px;
-  font-weight: 400;
-  color: var(--green);
-  margin-bottom: 16px;
-}
-
-.review-content {
-  font-size: 15px;
-  font-weight: 300;
-  line-height: 2.1;
-  color: #5f6057;
-  word-break: keep-all;
-  white-space: pre-line;
-}
-
-.review-close {
-  border: none;
-  background: none;
-  color: #999181;
-  font-family: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  margin-top: 22px;
-}
-
-.review-close:hover {
-  color: var(--green);
-}
-
-/* 하단 */
-footer {
-  border-top: 1px solid var(--line);
-  text-align: center;
-  padding: 30px 15px;
-  color: #999181;
-  font-family: 'DM Serif Display', serif;
-  font-size: 14px;
-}
-
-/* 태블릿 */
-@media (max-width: 900px) {
-  .book-items {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-  }
-}
-
-/* 모바일 */
-@media (max-width: 550px) {
-  header {
-    padding: 22px 18px 15px;
-  }
-
-  .intro {
-    padding: 25px 18px 35px;
-  }
-
-  .container {
-    padding: 0 18px 65px;
-  }
-
-  .book-items {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 25px 16px;
-  }
-
-  .book-title {
-    font-size: 13px;
-  }
-
-  .review-panel {
-    padding: 23px 19px;
-  }
-
-  .review-content {
-    font-size: 14px;
-  }
-
-  .book-row {
-    margin-bottom: 38px;
-  }
-}
-</style>
 </head>
 
 <body>
@@ -328,7 +22,7 @@ footer {
 </header>
 
 <section class="intro">
-  <h1>Book Archive</h1>
+  <h1>10 Archive</h1>
   <p>책 10권 읽기 BINGO</p>
 </section>
 
@@ -337,7 +31,9 @@ footer {
 </main>
 
 <footer>
-  Every book leaves a story.
+  <div class="reading-progress">
+    <span id="reviewProgress">0/10</span>
+  </div>
 </footer>
 
 <script>
@@ -350,74 +46,102 @@ const books = [
   {
     title: "이방인",
     author: "알베르 카뮈",
-    publisher: "민음사",
+    publisher: "열린책들",
     cover: "images/The stranger.png",
-    review: "이곳에 이방인을 읽고 느꼈던 생각을 적어주세요."
+    review: `
+    주인공 뫼르소는 전형적인 소시오패스같다는 생각이 들었다. 항상 수동적인 모습을 보여준다.
+    내 주변에 뫼르소같은 인물이 있다면 나도 아마 뫼르소를 무슨생각을 하는지 모르겠지만 의리있고 진국인 친구라고 생각할지도 모르겠다.
+    주변에 무심한 것 같으면서도 모든 일을 다 알고 있고 주변인들에게 별 감정이 없는 것 같지만 항상 도와준다.
+    어머니의 장례식에서 울지 않아서 냉혈한으로 취급받고 살인사건 재판에서 불리하게 작용한다.
+    뫼르소가 자신의 가치를 사제에게 가감없이 분출하는 장면이 있는데 그때 왜 책 제목이 이방인인지 알 수 있는 부분이었다.
+    뫼르소는 종국에 가서야 죽음으로서 자신이 행복하다고 말한다.
+    항소가 받아들여지길 바라면서도 항소를 하지도 않는 이 모순적인 인물이 뫼르소(이방인) 그 자체이고
+    인생에서 자신이 이방인이라고 생각하는 사람들이 얼마나 많을까 생각하게 된다.
+    `
   },
   {
-    title: "책 제목 02",
-    author: "저자 이름",
-    publisher: "출판사",
-    cover: "images/book-02.jpg",
-    review: "두 번째 책의 독후감을 작성하세요."
+    title: "총균쇠",
+    author: "재레드 다이아몬드",
+    publisher: "김영사",
+    cover: "images/Gun, Germs, and Steel.png",
+    review: ""
   },
   {
     title: "책 제목 03",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-03.jpg",
-    review: "세 번째 책의 독후감을 작성하세요."
+    review: ""
   },
   {
     title: "책 제목 04",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-04.jpg",
-    review: "네 번째 책의 독후감을 작성하세요."
+    review: ""
   },
   {
     title: "책 제목 05",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-05.jpg",
-    review: "다섯 번째 책의 독후감을 작성하세요."
+    review: ""
   },
   {
     title: "책 제목 06",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-06.jpg",
-    review: "여섯 번째 책의 독후감을 작성하세요."
+    review: ""
   },
   {
     title: "책 제목 07",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-07.jpg",
-    review: "일곱 번째 책의 독후감을 작성하세요."
+    review: ""
   },
   {
     title: "책 제목 08",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-08.jpg",
-    review: "여덟 번째 책의 독후감을 작성하세요."
+    review: ""
   },
   {
     title: "책 제목 09",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-09.jpg",
-    review: "아홉 번째 책의 독후감을 작성하세요."
+    review: ""
   },
   {
     title: "책 제목 10",
     author: "저자 이름",
     publisher: "출판사",
     cover: "images/book-10.jpg",
-    review: "열 번째 책의 독후감을 작성하세요."
+    review: ""
   }
 ];
+
+// ========================================
+// 독후감 작성 현황 카운터
+// ========================================
+
+const progressElement = document.getElementById("reviewProgress");
+
+function updateReviewProgress() {
+
+  // 실제 독후감 내용이 입력된 책만 카운트
+  const completedCount = books.filter(book =>
+    book.review.trim() !== ""
+  ).length;
+
+  progressElement.textContent = `${completedCount}/${books.length}`;
+}
+
+// 페이지 최초 실행
+updateReviewProgress();
 
 // ========================================
 // 2. 책 카드 생성
@@ -427,7 +151,30 @@ const grid = document.getElementById("bookGrid");
 
 // 현재 열려 있는 독후감 영역
 let activePanel = null;
-let activeBookIndex = null;
+
+// ========================================
+// 독후감 닫기 공통 함수
+// ========================================
+
+function closeReviewPanel(panel) {
+
+  panel.classList.remove("open");
+
+  const row = panel.closest(".book-row");
+
+  row.querySelectorAll(".cover-button").forEach(btn => {
+    btn.setAttribute("aria-expanded", "false");
+  });
+
+  row.querySelectorAll(".review-hint").forEach(el => {
+    el.textContent = "표지를 눌러 독후감 보기 ↓";
+  });
+
+  // 현재 열린 독후감 초기화
+  if (activePanel?.panel === panel) {
+    activePanel = null;
+  }
+}
 
 function createBookCard(book, index, panel) {
 
@@ -502,49 +249,30 @@ function createBookCard(book, index, panel) {
 
   // 표지 클릭 이벤트
 
+  // ========================================
+  // 책 표지 클릭 이벤트
+  // ========================================
+
   button.addEventListener("click", () => {
 
-    const isSameBook = activePanel === panel &&
-                      activeBookIndex === index;
+    const currentRow = card.closest(".book-row");
 
-    // 같은 책을 다시 누르면 독후감 닫기
+    // 이미 선택한 책인지 확인
+    const isSameBook =
+      activePanel?.panel === panel &&
+      activePanel?.bookIndex === index;
+
+    // 같은 책을 다시 누르면 닫기
     if (isSameBook) {
 
-      panel.classList.remove("open");
-
-      const row = card.closest(".book-row");
-
-      row.querySelectorAll(".cover-button").forEach(btn => {
-        btn.setAttribute("aria-expanded", "false");
-      });
-
-      row.querySelectorAll(".review-hint").forEach(el => {
-        el.textContent = "표지를 눌러 독후감 보기 ↓";
-      });
-
-      activePanel = null;
-      activeBookIndex = null;
+      closeReviewPanel(panel);
 
       return;
     }
 
-    // 이전에 열려 있던 독후감 초기화
+    // 이전 독후감이 열려 있다면 닫기
     if (activePanel) {
-
-      const previousRow = activePanel.row;
-
-      // 다른 줄이라면 기존 독후감 닫기
-      if (activePanel.panel !== panel) {
-        activePanel.panel.classList.remove("open");
-      }
-
-      previousRow.querySelectorAll(".cover-button").forEach(btn => {
-        btn.setAttribute("aria-expanded", "false");
-      });
-
-      previousRow.querySelectorAll(".review-hint").forEach(el => {
-        el.textContent = "표지를 눌러 독후감 보기 ↓";
-      });
+      closeReviewPanel(activePanel.panel);
     }
 
     // 선택한 책의 독후감 내용으로 교체
@@ -555,21 +283,21 @@ function createBookCard(book, index, panel) {
       book.title;
 
     panel.querySelector(".review-content").textContent =
-      book.review;
+      book.review || "아직 작성된 독후감이 없습니다.";
 
-    // 독후감 영역 표시
+    // 독후감 영역 열기
     panel.classList.add("open");
 
+    // 선택 상태 변경
     button.setAttribute("aria-expanded", "true");
-    hint.textContent = "독후감이 펼쳐졌습니다 ↑";
+    hint.textContent = "ㅤ";
 
     // 현재 선택 정보 저장
     activePanel = {
       panel: panel,
-      row: card.closest(".book-row")
+      row: currentRow,
+      bookIndex: index
     };
-
-    activeBookIndex = index;
 
     // 부드럽게 스크롤
     requestAnimationFrame(() => {
@@ -607,23 +335,10 @@ function createReviewPanel() {
   const close = document.createElement("button");
   close.className = "review-close";
   close.type = "button";
-  close.textContent = "독후감 접기 ↑";
+  close.textContent = "▲ 닫기";
 
   close.addEventListener("click", () => {
-
-    panel.classList.remove("open");
-
-    const row = panel.closest(".book-row");
-
-    row.querySelectorAll(".cover-button").forEach(btn => {
-      btn.setAttribute("aria-expanded", "false");
-    });
-
-    row.querySelectorAll(".review-hint").forEach(el => {
-      el.textContent = "표지를 눌러 독후감 보기 ↓";
-    });
-
-    activePanel = null;
+    closeReviewPanel(panel);
   });
 
   panel.append(label, heading, content, close);
