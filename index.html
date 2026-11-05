@@ -30,6 +30,8 @@
   <div id="bookGrid"></div>
 </main>
 
+<div id="reviewBackdrop"></div>
+
 <footer>
   <div class="reading-progress">
     <span id="reviewProgress">0/10</span>
@@ -170,10 +172,26 @@ function closeReviewPanel(panel) {
     el.textContent = "표지를 눌러 독후감 보기 ↓";
   });
 
-  // 현재 열린 독후감 초기화
+  // 바텀시트 배경 제거
+  document.getElementById("reviewBackdrop")
+    .classList.remove("active");
+
+  document.body.classList.remove("review-open");
+
   if (activePanel?.panel === panel) {
     activePanel = null;
   }
+
+  // 배경 클릭 시 독후감 닫기
+  document.getElementById("reviewBackdrop")
+    .addEventListener("click", () => {
+
+      if (activePanel) {
+        closeReviewPanel(activePanel.panel);
+      }
+
+    });
+  
 }
 
 function createBookCard(book, index, panel) {
@@ -287,6 +305,12 @@ function createBookCard(book, index, panel) {
 
     // 독후감 영역 열기
     panel.classList.add("open");
+
+    // 모바일 바텀시트 활성화
+    document.getElementById("reviewBackdrop")
+      .classList.add("active");
+
+    document.body.classList.add("review-open");
 
     // 선택 상태 변경
     button.setAttribute("aria-expanded", "true");

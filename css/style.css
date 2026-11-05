@@ -283,7 +283,9 @@ footer {
 }
 
 /* 모바일 */
+
 @media (max-width: 550px) {
+
   header {
     padding: 22px 18px 15px;
   }
@@ -292,28 +294,123 @@ footer {
     padding: 25px 18px 35px;
   }
 
+  /* 10권을 하나의 그리드로 통합 */
   .container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px 16px;
     padding: 0 18px 65px;
   }
 
+  /* 기존 5권씩 나눈 책장 구조 해제 */
+  .book-row {
+    display: contents;
+  }
+
   .book-items {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 25px 16px;
+    display: contents;
+  }
+
+  .book-card {
+    width: 100%;
   }
 
   .book-title {
     font-size: 13px;
   }
 
+  .book-row {
+    margin-bottom: 0;
+  }
+
+  /* 독후감 바텀시트 */
   .review-panel {
-    padding: 23px 19px;
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    max-width: 680px;
+    max-height: 75dvh;
+    overflow-y: auto;
+
+    margin: 0 auto;
+    padding: 28px 24px 35px;
+
+    background: var(--card);
+
+    border: none;
+    border-top: 3px solid var(--green);
+    border-radius: 20px 20px 0 0;
+
+    box-shadow: 0 -8px 30px rgba(0,0,0,.12);
+
+    z-index: 1001;
+
+    animation: mobileSheet .3s ease;
+  }
+
+  .review-panel.open {
+    display: block;
+  }
+
+  /* 바텀시트 손잡이 */
+  .review-panel::before {
+    content: "";
+    display: block;
+    width: 38px;
+    height: 4px;
+    background: #d8d0c3;
+    border-radius: 10px;
+    margin: 0 auto 22px;
+  }
+
+  .review-heading {
+    font-size: 23px;
   }
 
   .review-content {
     font-size: 14px;
+    line-height: 1.9;
   }
 
-  .book-row {
-    margin-bottom: 38px;
+  .review-close {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    margin-top: 25px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* 배경 어둡게 처리 */
+  #reviewBackdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 35, 30, .45);
+    z-index: 1000;
+  }
+
+  #reviewBackdrop.active {
+    display: block;
+  }
+
+  body.review-open {
+    overflow: hidden;
+  }
+}
+
+/* 모바일 바텀시트 애니메이션 */
+@keyframes mobileSheet {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
