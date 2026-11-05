@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Bookshelf | 독서 기록</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f5f1e8;
+  --card: #fffdf8;
+  --green: #354b3d;
+  --text: #333b32;
+  --muted: #89877c;
+  --line: #e8e1d5;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+header {
+  height: 75px;
+  padding: 0 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 25px;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+
+nav {
+  display: flex;
+  gap: 30px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.hero {
+  text-align: center;
+  padding: 95px 20px 75px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: #9b947e;
+  margin-bottom: 22px;
+}
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(42px, 7vw, 72px);
+  font-weight: 400;
+  color: var(--green);
+  margin-bottom: 18px;
+}
+
+.hero p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 2;
+  font-weight: 300;
+}
+
+.book-count {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 9px 20px;
+  border: 1px solid #dcd4c5;
+  border-radius: 30px;
+  color: var(--green);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.section {
+  max-width: 1160px;
+  margin: auto;
+  padding: 0 30px 100px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 30px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--line);
+}
+
+.section-heading h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--green);
+}
+
+.section-heading span {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+}
+
+.book-card {
+  background: var(--card);
+  border: 1px solid #eee8dc;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: transform .25s, box-shadow .25s;
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(53, 75, 61, .08);
+}
+
+.cover-area {
+  height: 245px;
+  background: #eae4d8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  position: relative;
+}
+
+.cover {
+  height: 195px;
+  width: 135px;
+  object-fit: cover;
+  box-shadow: 5px 7px 15px rgba(0,0,0,.16);
+  transition: transform .3s;
+}
+
+.book-card:hover .cover {
+  transform: rotate(-2deg);
+}
+
+.cover-placeholder {
+  width: 135px;
+  height: 195px;
+  background: var(--green);
+  color: #f5f1e8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 15px;
+  box-shadow: 5px 7px 15px rgba(0,0,0,.16);
+}
+
+.cover-placeholder span {
+  font-family: 'DM Serif Display', serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.cover-placeholder small {
+  margin-top: 12px;
+  font-size: 9px;
+  opacity: .7;
+}
+
+.book-info {
+  padding: 23px 21px 25px;
+}
+
+.book-number {
+  color: #a39b86;
+  font-family: 'DM Serif Display', serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.book-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 9px;
+  color: var(--green);
+  word-break: keep-all;
+}
+
+.book-meta {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.9;
+  margin-bottom: 17px;
+}
+
+.review {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #6e6d63;
+  font-weight: 300;
+  word-break: keep-all;
+}
+
+.review-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #9b947e;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+footer {
+  background: var(--green);
+  text-align: center;
+  padding: 55px 20px;
+  color: #f5f1e8;
+}
+
+footer h2 {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+
+footer p {
+  font-size: 11px;
+  color: #c5cdbf;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 800px) {
+  .book-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  header {
+    padding: 0 20px;
+  }
+
+  nav {
+    gap: 12px;
+    font-size: 11px;
+  }
+
+  .hero {
+    padding: 70px 15px 55px;
+  }
+
+  .section {
+    padding: 0 16px 65px;
+  }
+
+  .book-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .cover-area {
+    height: 220px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">My Bookshelf.</div>
+  <nav>
+    <span>HOME</span>
+    <span>BOOKS</span>
+    <span>ABOUT</span>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">A JOURNEY THROUGH BOOKS</div>
+  <h1>My Little Library</h1>
+  <p>
+    책 속에서 만난 세상, 마음에 남은 문장들.<br>
+    한 권의 책이 남긴 작은 생각들을 기록합니다.
+  </p>
+  <div class="book-count">10 BOOKS · MY READING JOURNAL</div>
+</section>
+
+<main class="section">
+  <div class="section-heading">
+    <h2>Book Collection</h2>
+    <span>MY READING ARCHIVE / 01 — 10</span>
+  </div>
+
+  <div class="book-grid" id="bookGrid"></div>
+</main>
+
+<footer>
+  <h2>Every book leaves a trace.</h2>
+  <p>읽었던 모든 책이 나의 일부가 되기를.</p>
+</footer>
+
+<script>
+const books = [
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-01.jpg",
+    review: "책을 읽으며 느꼈던 생각과 인상 깊었던 내용을 짧게 기록해 보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-02.jpg",
+    review: "마음에 남았던 문장이나 책을 통해 새롭게 깨달은 점을 기록해 보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-03.jpg",
+    review: "나에게 어떤 의미로 다가온 책인지 짧은 감상평을 남겨보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-04.jpg",
+    review: "책을 덮은 뒤에도 오래도록 기억하고 싶은 생각을 적어보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-05.jpg",
+    review: "읽는 동안 느꼈던 감정과 나만의 해석을 자유롭게 기록해 보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-06.jpg",
+    review: "이 책을 통해 이전과 달라진 생각이 있다면 짧게 남겨보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-07.jpg",
+    review: "가장 인상 깊었던 부분과 그 이유를 나만의 언어로 표현해 보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-08.jpg",
+    review: "언젠가 다시 읽고 싶은 이유와 책이 전해준 메시지를 적어보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-09.jpg",
+    review: "책을 읽으며 공감했던 순간이나 새롭게 알게 된 사실을 기록해 보세요."
+  },
+  {
+    title: "책 제목을 입력하세요",
+    author: "저자 이름",
+    publisher: "출판사",
+    cover: "images/book-10.jpg",
+    review: "나의 독서 여정에 남은 마지막 한 줄의 감상을 적어보세요."
+  }
+];
+
+const grid = document.getElementById("bookGrid");
+
+books.forEach((book, index) => {
+  const card = document.createElement("article");
+  card.className = "book-card";
+
+  card.innerHTML = `
+    <div class="cover-area">
+      <div class="cover-placeholder">
+        <span>MY BOOK</span>
+        <small>NO. ${String(index + 1).padStart(2, "0")}</small>
+      </div>
+      <img class="cover" src="${book.cover}" alt="${book.title} 표지"
+           onerror="this.style.display='none'"
+           onload="this.previousElementSibling.style.display='none'">
+    </div>
+    <div class="book-info">
+      <div class="book-number">BOOK NO. ${String(index + 1).padStart(2, "0")}</div>
+      <h3 class="book-title"></h3>
+      <div class="book-meta"></div>
+      <p class="review">
+        <span class="review-label">MY THOUGHTS</span>
+        ${book.review}
+      </p>
+    </div>
+  `;
+
+  card.querySelector(".book-title").textContent = book.title;
+  card.querySelector(".book-meta").textContent =
+    `저자 · ${book.author}  |  출판사 · ${book.publisher}`;
+
+  grid.appendChild(card);
+});
+</script>
+
+</body>
+</html>
