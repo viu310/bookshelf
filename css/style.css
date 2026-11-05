@@ -296,10 +296,14 @@ footer {
 
   /* 10권을 하나의 그리드로 통합 */
   .container {
+    padding: 0 18px 65px;
+  }
+
+  /* 실제 책 카드가 들어가는 영역 */
+  #bookGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 25px 16px;
-    padding: 0 18px 65px;
   }
 
   /* 기존 5권씩 나눈 책장 구조 해제 */

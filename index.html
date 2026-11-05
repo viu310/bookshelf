@@ -181,18 +181,20 @@ function closeReviewPanel(panel) {
   if (activePanel?.panel === panel) {
     activePanel = null;
   }
-
-  // 배경 클릭 시 독후감 닫기
-  document.getElementById("reviewBackdrop")
-    .addEventListener("click", () => {
-
-      if (activePanel) {
-        closeReviewPanel(activePanel.panel);
-      }
-
-    });
   
 }
+
+// ========================================
+// 바텀시트 배경 클릭 이벤트
+// ========================================
+
+document.getElementById("reviewBackdrop")
+  .addEventListener("click", () => {
+
+    if (activePanel) {
+      closeReviewPanel(activePanel.panel);
+    }
+});
 
 function createBookCard(book, index, panel) {
 
@@ -323,13 +325,17 @@ function createBookCard(book, index, panel) {
       bookIndex: index
     };
 
-    // 부드럽게 스크롤
-    requestAnimationFrame(() => {
-      panel.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
+    // PC에서만 독후감 영역으로 스크롤
+    if (window.innerWidth > 550) {
+
+      requestAnimationFrame(() => {
+        panel.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest"
+        });
       });
-    });
+
+    }
 
   });
 
