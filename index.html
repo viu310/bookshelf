@@ -82,10 +82,25 @@ header {
 }
 
 .book-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+}
+
+/* 5권씩 독립된 한 줄 */
+.book-row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 한 줄에 책 5권 */
+.book-items {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 38px 24px;
+  gap: 24px;
 }
+
 
 .book-card {
   min-width: 0;
@@ -254,9 +269,9 @@ footer {
 
 /* 태블릿 */
 @media (max-width: 900px) {
-  .book-grid {
+  .book-items {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 32px 20px;
+    gap: 20px;
   }
 }
 
@@ -281,6 +296,11 @@ footer {
 
   .book-title {
     font-size: 13px;
+  }
+
+  .book-items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px 16px;
   }
 
   .review-panel {
@@ -397,21 +417,23 @@ const books = [
 // 화면 생성
 // ===================================
 
-const grid = document.getElementById("bookGrid");
-let activePanel = null;
 
-books.forEach((book, index) => {
+const grid = document.getElementById("bookGrid");
+
+let activeRow = null;
+
+// 책 카드 생성
+function createBookCard(book, index, panel) {
+  const number = String(index + 1).padStart(2, "0");
 
   const card = document.createElement("article");
   card.className = "book-card";
-
-  const number = String(index + 1).padStart(2, "0");
 
   const button = document.createElement("button");
   button.className = "cover-button";
   button.type = "button";
   button.setAttribute("aria-expanded", "false");
-  button.setAttribute("aria-label", `${book.title} 독후감 펼치기`);
+  button.setAttribute("aria-label", `${book.title} 독후감 보기`);
 
   const wrap = document.createElement("div");
   wrap.className = "cover-wrap";
@@ -437,8 +459,7 @@ books.forEach((book, index) => {
   };
 
   img.onerror = () => {
-    img.style.display = "none";
-    placeholder.style.display = "flex";
+    img.style.display = "flex";
   };
 
   wrap.append(placeholder, img);
@@ -466,10 +487,58 @@ books.forEach((book, index) => {
   info.append(bookNumber, title, meta);
   card.append(button, hint, info);
 
-  // 독후감 영역
+  // 독후감 열기 / 닫기
+  button.addEventListener("click", () => {
+
+    const isOpen = panel.classList.contains("open");
+
+    // 다른 줄의 독후감 닫기
+    if (activeRow && activeRow !== panel) {
+      activeRow.classList.remove("open");
+
+      activeRow.querySelectorAll(".cover-button")
+        .forEach(btn => btn.setAttribute("aria-expanded", "false"));
+
+      activeRow.querySelectorAll(".review-hint")
+        .forEach(el => el.textContent = "표지를 눌러 독후감 보기 ↓");
+    }
+
+    // 현재 줄이 열려 있으면 닫기
+    if (isOpen) {
+      panel.classList.remove("open");
+
+      button.setAttribute("aria-expanded", "false");
+      hint.textContent = "표지를 눌러 독후감 보기 ↓";
+
+      activeRow = null;
+      return;
+    }
+
+    // 현재 줄의 독후감 펼치기
+    panel.classList.add("open");
+
+    button.setAttribute("aria-expanded", "true");
+    hint.textContent = "독후감이 펼쳐졌습니다 ↑";
+
+    activeRow = panel;
+
+    requestAnimationFrame(() => {
+      panel.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    });
+  });
+
+  return card;
+}
+
+// 독후감 영역 생성
+function createReviewPanel(book, index) {
+  const number = String(index + 1).padStart(2, "0");
+
   const panel = document.createElement("section");
   panel.className = "review-panel";
-  panel.setAttribute("aria-label", `${book.title} 독후감`);
 
   const label = document.createElement("div");
   label.className = "review-label";
@@ -488,23 +557,119 @@ books.forEach((book, index) => {
   close.type = "button";
   close.textContent = "접기 ↑";
 
+  close.addEventListener("click", () => {
+    panel.classList.remove("open");
+
+    panel.parentElement
+      .querySelectorAll(".cover-button")
+      .forEach(btn => btn.setAttribute("aria-expanded", "false"));
+
+    panel.parentElement
+      .querySelectorAll(".review-hint")
+      .forEach(el => el.textContent = "표지를 눌러 독후감 보기 ↓");
+
+    activeRow = null;
+  });
+
   panel.append(label, heading, content, close);
 
-  button.addEventListener("click", () => {
-    const isOpen = panel.classList.contains("open");
+  return panel;
+}
 
-    if (activePanel) {
-      activePanel.panel.classList.remove("open");
-      activePanel.button.setAttribute("aria-expanded", "false");
-      activePanel.hint.textContent = "표지를 눌러 독후감 보기 ↓";
-    }
+// 10권을 5권씩 두 줄로 분리
+for (let rowIndex = 0; rowIndex < 2; rowIndex++) {
 
-    if (!isOpen) {
+  const row = document.createElement("section");
+  row.className = "book-row";
+
+  const items = document.createElement("div");
+  items.className = "book-items";
+
+  const start = rowIndex * 5;
+  const end = start + 5;
+
+  const rowBooks = books.slice(start, end);
+
+  rowBooks.forEach((book, i) => {
+    const index = start + i;
+
+    const card = createBookCard(
+      book,
+      index,
+      null
+    );
+
+    items.appendChild(card);
+  });
+
+  const panel = createReviewPanel(
+    rowBooks[0],
+    start
+  );
+
+  // 각 줄의 독후감은 해당 줄 바로 아래에 배치
+  // 개별 카드가 자신의 줄 독후감을 열도록 연결
+  rowBooks.forEach((book, i) => {
+
+    const card = items.children[i];
+    const button = card.querySelector(".cover-button");
+    const hint = card.querySelector(".review-hint");
+
+    button.replaceWith(button.cloneNode(true));
+
+    const newButton = card.querySelector(".cover-button");
+
+    newButton.addEventListener("click", () => {
+
+      const isOpen = panel.classList.contains("open");
+
+      if (activeRow && activeRow !== panel) {
+        activeRow.classList.remove("open");
+
+        activeRow.parentElement
+          .querySelectorAll(".cover-button")
+          .forEach(btn => btn.setAttribute("aria-expanded", "false"));
+
+        activeRow.parentElement
+          .querySelectorAll(".review-hint")
+          .forEach(el => el.textContent = "표지를 눌러 독후감 보기 ↓");
+      }
+
+      if (isOpen && activeRow === panel) {
+        panel.classList.remove("open");
+        newButton.setAttribute("aria-expanded", "false");
+        hint.textContent = "표지를 눌러 독후감 보기 ↓";
+        activeRow = null;
+        return;
+      }
+
+      // 클릭한 책의 독후감으로 내용 변경
+      const bookIndex = start + i;
+      const selectedBook = books[bookIndex];
+
+      panel.querySelector(".review-label").textContent =
+        `MY REVIEW · BOOK ${String(bookIndex + 1).padStart(2, "0")}`;
+
+      panel.querySelector(".review-heading").textContent =
+        selectedBook.title;
+
+      panel.querySelector(".review-content").textContent =
+        selectedBook.review;
+
       panel.classList.add("open");
-      button.setAttribute("aria-expanded", "true");
+
+      row.querySelectorAll(".cover-button").forEach(btn => {
+        btn.setAttribute("aria-expanded", "false");
+      });
+
+      row.querySelectorAll(".review-hint").forEach(el => {
+        el.textContent = "표지를 눌러 독후감 보기 ↓";
+      });
+
+      newButton.setAttribute("aria-expanded", "true");
       hint.textContent = "독후감이 펼쳐졌습니다 ↑";
 
-      activePanel = { panel, button, hint };
+      activeRow = panel;
 
       requestAnimationFrame(() => {
         panel.scrollIntoView({
@@ -512,20 +677,13 @@ books.forEach((book, index) => {
           block: "nearest"
         });
       });
-    } else {
-      activePanel = null;
-    }
+    });
   });
 
-  close.addEventListener("click", () => {
-    panel.classList.remove("open");
-    button.setAttribute("aria-expanded", "false");
-    hint.textContent = "표지를 눌러 독후감 보기 ↓";
-    activePanel = null;
-  });
+  row.append(items, panel);
+  grid.appendChild(row);
+}
 
-  grid.append(card, panel);
-});
 
 </script>
 
